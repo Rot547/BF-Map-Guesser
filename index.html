@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Guesser</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* Full-screen Video Background */
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        header {
+            background-color: rgba(50, 50, 50, 0.8);
+            color: #fff;
+            padding: 20px 0;
+            position: relative;
+            text-align: center;
+            z-index: 2;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease-in-out;
+            margin-bottom: 20px;
+        }
+
+        header.smaller {
+            font-size: 2rem;
+            padding: 10px 0;
+        }
+
+        #homeButton {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            background-color: rgba(255, 71, 71, 0.7);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            cursor: pointer;
+            z-index: 3;
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        #homeButton:hover {
+            background-color: rgba(255, 71, 71, 1);
+        }
+
+        .category {
+            position: relative;
+            z-index: 2;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: rgba(25, 25, 25, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #ff4747;
+            color: white;
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        button:hover {
+            background-color: #ff3333;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(50, 50, 50, 0.9);
+            color: #ff4747;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            font-size: 1rem;
+            z-index: 2;
+        }
+
+        footer a {
+            color: #ff4747;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        #game, #score {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Image Container */
+        #image-container {
+            width: 90%;
+            max-width: 980px;
+            height: auto;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+            border: 5px solid #ff4747;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        #mapImage {
+            width: 100%;
+            height: auto;
+            transition: opacity 1s ease-in-out;
+        }
+
+        #input-container {
+            position: relative;
+            z-index: 2;
+            margin: 0 auto;
+            width: 90%;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        #guess {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ff4747;
+            border-radius: 5px;
+            flex-grow: 1;
+            max-width: 200px;
+            height: 20px;
+            vertical-align: middle;
+        }
+
+        /* Centered Feedback Popup */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            z-index: 5;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        /* End Screen Popup */
+        .popup-end {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            z-index: 5;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        #endPopup button {
+            display: block;
+            margin: 20px auto;
+            background-color: #ff4747;
+            color: white;
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #endPopup button:hover {
+            background-color: #ff3333;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Video Background -->
+    <video id="video-background" autoplay loop muted volume="0.2">
+        <source src="gameplay1.mp4" type="video/mp4">
+    </video>
+
+    <!-- Header -->
+    <header id="header">
+        <button id="homeButton" onclick="window.location.reload();">Home</button>
+        <h1>Blockfront Map Guesser</h1>
+    </header>
+
+    <!-- Category Buttons -->
+    <div id="categories">
+        <div class="category">
+            <button onclick="startGame('easy')">Easy</button>
+            <button onclick="startGame('medium')">Medium</button>
+            <button onclick="startGame('hard')">Hard</button>
+        </div>
+    </div>
+
+    <div id="game" style="display: none;">
+        <div id="image-container">
+            <img id="mapImage" src="" alt="Map Screenshot">
+        </div>
+        <div id="input-container">
+            <input type="text" id="guess" placeholder="Enter map name">
+            <button onclick="submitGuess()">Submit</button>
+        </div>
+    </div>
+
+    <div id="score" style="display: none;">
+        <h2>Your Score</h2>
+        <p id="finalScore"></p>
+    </div>
+
+    <footer>
+        <p>Made by Rotblitz | <a href="https://www.blockfrontmc.com" target="_blank">Not owned by or affiliated with the official Blockfront Mod</a></p>
+    </footer>
+
+    <!-- Popups -->
+    <div id="feedbackPopup" class="popup"></div>
+    <div id="endPopup" class="popup-end">
+        <!-- The Play Again button and the final score will be inserted dynamically -->
+    </div>
+
+<script>
+    const mapsFolder = 'Maps';
+    const mapNames = [
+        'Ursprung', 'Bootcamp', 'Donner', 'Asylum', 'Anzio', 'Brittany', 'Casino', 'Hangar', 'Nezhit', 'Yards',
+        'Cliffside', 'Flakturm', 'Gdansk', 'Nuketown', 'Station', 'Storm', 'Inferno', 'Meadows', 'Shimajiri' 
+    ];
+    let currentCategory = '';
+    let currentMap = '';
+    let currentImage = '';
+    let score = 0;
+    let attempts = 0;
+    const maxAttempts = 5;
+    let usedImages = [];
+
+    function startGame(category) {
+        currentCategory = category;
+        document.getElementById('categories').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
+        document.getElementById('header').classList.add('smaller');
+        nextRound();
+    }
+
+    function nextRound() {
+        if (attempts >= maxAttempts) {
+            endGame();
+            return;
+        }
+
+        let availableMaps = mapNames.filter(map => !usedImages.includes(map));
+        if (availableMaps.length === 0) {
+            usedImages = [];
+            availableMaps = mapNames;
+        }
+
+        currentMap = availableMaps[Math.floor(Math.random() * availableMaps.length)];
+        usedImages.push(currentMap);
+
+        fetch(`getRandomImage.php?map=${currentMap}&category=${currentCategory}`)
+            .then(response => response.text())
+            .then(imagePath => {
+                const nextImage = new Image();
+                nextImage.src = imagePath;
+                nextImage.onload = () => {
+                    currentImage = imagePath;
+                    document.getElementById('mapImage').src = currentImage;
+                    document.getElementById('mapImage').style.opacity = 1;
+                    document.getElementById('guess').value = '';
+                };
+                nextImage.onerror = () => alert('Failed to load image!');
+            })
+            .catch(error => alert('Error fetching image: ' + error));
+    }
+
+    function submitGuess() {
+        const userGuess = document.getElementById('guess').value.trim();
+        const feedbackPopup = document.getElementById('feedbackPopup');
+
+        if (userGuess.toLowerCase() === currentMap.toLowerCase()) {
+            score += 20;
+            feedbackPopup.textContent = 'Correct!';
+            feedbackPopup.style.color = 'green';
+        } else {
+            feedbackPopup.textContent = `Incorrect! The correct answer was: ${currentMap}`;
+            feedbackPopup.style.color = 'red';
+        }
+
+        feedbackPopup.style.display = 'block';
+        setTimeout(() => {
+            feedbackPopup.style.display = 'none';
+            nextRound();
+        }, 1000);
+
+        attempts++;
+    }
+
+    function endGame() {
+        const endPopup = document.getElementById('endPopup');
+        
+        // Display the final score and the Play Again button
+        endPopup.innerHTML = `
+            <p>Your final score is: ${score}</p>
+            <button onclick="restartGame()">Play Again</button>
+        `;
+        
+        endPopup.style.display = 'block';
+
+        // Disable the input and submit button
+        document.getElementById('guess').disabled = true;
+        document.querySelector('#input-container button').disabled = true;
+    }
+
+    function restartGame() {
+        location.reload();  // Refresh the page to restart the game
+    }
+</script>
+
+</body>
+</html>
