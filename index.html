@@ -284,37 +284,40 @@
     }
 
     function nextRound() {
-        if (attempts >= maxAttempts) {
-            endGame();
-            return;
-        }
-
-        let availableMaps = mapNames.filter(map => !usedImages.includes(map));
-        if (availableMaps.length === 0) {
-            usedImages = [];
-            availableMaps = mapNames;
-        }
-
-        currentMap = availableMaps[Math.floor(Math.random() * availableMaps.length)];
-        usedImages.push(currentMap);
-
-        const imagePath = `Maps/${currentMap}/${currentCategory}/${currentMap.toLowerCase()}_${currentCategory.toLowerCase()}-2.png`;
-
-        console.log("Looking for image in: " + imagePath);
-
-        const nextImage = new Image();
-        nextImage.src = imagePath;
-        nextImage.onload = () => {
-            currentImage = imagePath;
-            document.getElementById('mapImage').src = currentImage;
-            document.getElementById('mapImage').style.opacity = 1;
-            document.getElementById('guess').value = '';
-        };
-        nextImage.onerror = () => {
-            console.log('Failed to load image: ' + imagePath);
-            alert('Failed to load image!');
-        };
+    if (attempts >= maxAttempts) {
+        endGame();
+        return;
     }
+
+    // Filter out already used maps to avoid duplicates
+    let availableMaps = mapNames.filter(map => !usedImages.includes(map));
+    if (availableMaps.length === 0) {
+        usedImages = [];
+        availableMaps = mapNames;
+    }
+
+    // Pick a random map from the available maps
+    currentMap = availableMaps[Math.floor(Math.random() * availableMaps.length)];
+    usedImages.push(currentMap);
+
+    // Assuming images are named in a pattern like mapname_category_number.png, 
+    // and there are multiple numbers for each map (e.g., 1, 2, 3)
+    const imageNumber = Math.floor(Math.random() * 3) + 1; // This assumes there are 3 variations per map, adjust accordingly
+
+    // Construct the image path based on the selected map and category
+    const imagePath = `Maps/${currentMap}/${currentCategory}/${currentMap.toLowerCase()}_${currentCategory.toLowerCase()}-${imageNumber}.png`;
+
+    const nextImage = new Image();
+    nextImage.src = imagePath;
+    nextImage.onload = () => {
+        currentImage = imagePath;
+        document.getElementById('mapImage').src = currentImage;
+        document.getElementById('mapImage').style.opacity = 1;
+        document.getElementById('guess').value = '';
+    };
+    nextImage.onerror = () => alert('Failed to load image!');
+}
+
 
     function submitGuess() {
         const userGuess = document.getElementById('guess').value.trim();
