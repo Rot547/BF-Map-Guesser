@@ -13,16 +13,44 @@
             overflow: hidden;
         }
 
-        /* Full-screen Video Background */
-        #video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
+/* Ensure the video container is positioned as a background */
+#video-background-container {
+    position: fixed; /* Keep it fixed in the background */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Ensure the video stays in the background */
+    overflow: hidden; /* Hide overflow so the video doesn't break out of the container */
+}
+
+/* Make sure the iframe fills the entire screen */
+#video-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%); /* Center the video */
+    pointer-events: none; /* Prevent interaction with the video */
+}
+
+/* Overlay to hide branding and UI during load */
+#video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black; /* Covers the video */
+    z-index: 9999;
+}
+
+/* When the video is loaded, remove the overlay */
+#video-background.loaded + #video-overlay {
+    display: none;
+}
+
 
         header {
             background-color: rgba(50, 50, 50, 0.8);
@@ -214,10 +242,12 @@
 </head>
 <body>
 
-    <!-- Video Background -->
-    <video id="video-background" autoplay loop muted volume="0.2">
-        <source src="gameplay1.mp4" type="video/mp4">
-    </video>
+<div id="video-background-container">
+    <iframe id="video-background" src="https://www.youtube-nocookie.com/embed/8cW3eo1sbWI?autoplay=1&loop=1&mute=1&playlist=8cW3eo1sbWI&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3"
+            frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <div id="video-overlay"></div> <!-- Overlay to cover UI initially -->
+</div>
+
 
     <!-- Header -->
     <header id="header">
@@ -260,6 +290,17 @@
     </div>
 
 <script>
+
+// Wait for the video to load before hiding the overlay
+window.onload = function () {
+    var iframe = document.getElementById('video-background');
+    var overlay = document.getElementById('video-overlay');
+    
+    iframe.onload = function () {
+        overlay.style.display = 'none'; // Hide overlay once the iframe has loaded
+    };
+};
+
     const mapsFolder = 'Maps';
     const mapNames = [
         'Ursprung', 'Bootcamp', 'Donner', 'Asylum', 'Anzio', 'Brittany', 'Casino', 'Hangar', 'Nezhit', 'Yards',
