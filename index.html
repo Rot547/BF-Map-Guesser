@@ -13,44 +13,43 @@
             overflow: hidden;
         }
 
-/* Ensure the video container is positioned as a background */
-#video-background-container {
-    position: fixed; /* Keep it fixed in the background */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1; /* Ensure the video stays in the background */
-    overflow: hidden; /* Hide overflow so the video doesn't break out of the container */
-}
+        /* Ensure the video container is positioned as a background */
+        #video-background-container {
+            position: fixed; /* Keep it fixed in the background */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Ensure the video stays in the background */
+            overflow: hidden; /* Hide overflow so the video doesn't break out of the container */
+        }
 
-/* Make sure the iframe fills the entire screen */
-#video-background {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    transform: translate(-50%, -50%); /* Center the video */
-    pointer-events: none; /* Prevent interaction with the video */
-}
+        /* Make sure the iframe fills the entire screen */
+        #video-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%); /* Center the video */
+            pointer-events: none; /* Prevent interaction with the video */
+        }
 
-/* Overlay to hide branding and UI during load */
-#video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black; /* Covers the video */
-    z-index: 9999;
-}
+        /* Overlay to hide branding and UI during load */
+        #video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black; /* Covers the video */
+            z-index: 9999;
+        }
 
-/* When the video is loaded, remove the overlay */
-#video-background.loaded + #video-overlay {
-    display: none;
-}
-
+        /* When the video is loaded, remove the overlay */
+        #video-background.loaded + #video-overlay {
+            display: none;
+        }
 
         header {
             background-color: rgba(50, 50, 50, 0.8);
@@ -248,83 +247,110 @@
     <div id="video-overlay"></div> <!-- Overlay to cover UI initially -->
 </div>
 
+<!-- Header -->
+<header id="header">
+    <button id="homeButton" onclick="window.location.reload();">Home</button>
+    <h1>Blockfront Map Guesser</h1>
+</header>
 
-    <!-- Header -->
-    <header id="header">
-        <button id="homeButton" onclick="window.location.reload();">Home</button>
-        <h1>Blockfront Map Guesser</h1>
-    </header>
-
-    <!-- Category Buttons -->
-    <div id="categories">
-        <div class="category">
-            <button onclick="startGame('easy')">Easy</button>
-            <button onclick="startGame('medium')">Medium</button>
-            <button onclick="startGame('hard')">Hard</button>
-        </div>
+<!-- Category Buttons -->
+<div id="categories">
+    <div class="category">
+        <button onclick="startGame('easy')">Easy</button>
+        <button onclick="startGame('medium')">Medium</button>
+        <button onclick="startGame('hard')">Hard</button>
     </div>
+</div>
 
-    <div id="game" style="display: none;">
-        <div id="image-container">
-            <img id="mapImage" src="" alt="Map Screenshot">
-        </div>
-        <div id="input-container">
-            <input type="text" id="guess" placeholder="Enter map name">
-            <button onclick="submitGuess()">Submit</button>
-        </div>
+<div id="game" style="display: none;">
+    <div id="image-container">
+        <img id="mapImage" src="" alt="Map Screenshot">
     </div>
-
-    <div id="score" style="display: none;">
-        <h2>Your Score</h2>
-        <p id="finalScore"></p>
+    <div id="input-container">
+        <input type="text" id="guess" placeholder="Enter map name">
+        <button onclick="submitGuess()">Submit</button>
     </div>
+</div>
 
-    <footer>
-        <p>Made by Rotblitz | <a href="https://www.blockfrontmc.com" target="_blank">Not owned by or affiliated with the official Blockfront Mod</a></p>
-    </footer>
+<div id="score" style="display: none;">
+    <h2>Your Score</h2>
+    <p id="finalScore"></p>
+</div>
 
-    <!-- Popups -->
-    <div id="feedbackPopup" class="popup"></div>
-    <div id="endPopup" class="popup-end">
-        <!-- The Play Again button and the final score will be inserted dynamically -->
-    </div>
+<footer>
+    <p>Made by Rotblitz | <a href="https://www.github.com/Rotblitz" target="_blank">GitHub</a></p>
+</footer>
+
+<div class="popup" id="correctPopup">Correct!</div>
+<div class="popup" id="incorrectPopup">Incorrect! The correct answer was <span id="correctAnswer"></span></div>
+
+<div class="popup-end" id="endPopup">
+    <h2>Game Over!</h2>
+    <p>Your final score is <span id="finalScoreText"></span></p>
+    <button onclick="restartGame()">Play Again</button>
+</div>
 
 <script>
-
-// Wait for the video to load before hiding the overlay
-window.onload = function () {
-    var iframe = document.getElementById('video-background');
-    var overlay = document.getElementById('video-overlay');
-    
-    iframe.onload = function () {
-        overlay.style.display = 'none'; // Hide overlay once the iframe has loaded
-    };
+// Map frequencies based on the provided values 
+const mapFrequencies = {
+    'Flakturm-Medium': 6,
+    'Yards-Medium': 20,
+    'Yards-Hard': 7,
+    'Nezhit-Easy': 9,
+    'Hangar-Medium': 11,
+    'Meadows-Medium': 6,
+    'Cliffside-Medium': 9,
+    'Nuketown-Hard': 2,
+    'Donner-Hard': 15,
+    'Gdansk-Hard': 7,
+    'Hangar-Easy': 12,
+    'Station-Easy': 24,
+    'Cliffside-Hard': 7,
+    'Inferno-Hard': 12,
+    'Shimajiri-Easy': 8,
+    'Bootcamp-Easy': 8,
+    'Shimajiri-Medium': 6,
+    'Inferno-Medium': 28,
+    'Nuketown-Medium': 9,
+    'Storm-Medium': 14,
+    'Brittany-Hard': 9,
+    'Station-Medium': 12,
+    'Brittany-Easy': 22,
+    'Shimajiri-Hard': 1,
+    'Storm-Hard': 5,
+    'Asylum-Medium': 5,
+    'Anzio-Easy': 19,
+    'Ursprung-Medium': 8,
+    'Brittany-Medium': 21,
+    'Nezhit-Medium': 7,
+    'Station-Hard': 1,
+    'Nuketown-Easy': 12,
+    // Add the remaining entries...
 };
 
-    const mapsFolder = 'Maps';
-    const mapNames = [
-        'Ursprung', 'Bootcamp', 'Donner', 'Asylum', 'Anzio', 'Brittany', 'Casino', 'Hangar', 'Nezhit', 'Yards',
-        'Cliffside', 'Flakturm', 'Gdansk', 'Nuketown', 'Station', 'Storm', 'Inferno', 'Meadows', 'Shimajiri' 
-    ];
-    let currentCategory = '';
-    let currentMap = '';
-    let currentImage = '';
-    let score = 0;
-    let attempts = 0;
-    const maxAttempts = 5;
-    let usedImages = [];
+let currentMap = '';
+let currentCategory = '';
+let attempts = 0;
+let maxAttempts = 10;
+let score = 0;
+let usedImages = [];
 
-    function startGame(category) {
-        console.log("Game started with difficulty: " + category);
+const mapNames = [
+    'Flakturm', 'Yards', 'Nezhit', 'Hangar', 'Meadows', 'Cliffside', 'Nuketown', 'Donner',
+    'Gdansk', 'Station', 'Cliffside', 'Inferno', 'Shimajiri', 'Bootcamp', 'Inferno', 'Nuketown',
+    'Storm', 'Brittany', 'Shimajiri', 'Asylum', 'Anzio', 'Ursprung', 'Brittany', 'Nezhit'
+];
 
-        currentCategory = category;
-        document.getElementById('categories').style.display = 'none';
-        document.getElementById('game').style.display = 'block';
-        document.getElementById('header').classList.add('smaller');
-        nextRound();
-    }
+// Start the game
+function startGame(category) {
+    currentCategory = category;
+    document.getElementById('categories').style.display = 'none';
+    document.getElementById('game').style.display = 'block';
+    nextRound();
+}
 
-    function nextRound() {
+// Start the next round
+function nextRound() {
     if (attempts >= maxAttempts) {
         endGame();
         return;
@@ -341,9 +367,18 @@ window.onload = function () {
     currentMap = availableMaps[Math.floor(Math.random() * availableMaps.length)];
     usedImages.push(currentMap);
 
-    // Assuming images are named in a pattern like mapname_category_number.png, 
-    // and there are multiple numbers for each map (e.g., 1, 2, 3)
-    const imageNumber = Math.floor(Math.random() * 3) + 1; // This assumes there are 3 variations per map, adjust accordingly
+// Determine the category and construct the map identifier
+const mapCategory = `${currentMap}-${currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1).toLowerCase()}`;
+
+console.log('Constructed mapCategory:', mapCategory); // Check the final value of mapCategory
+
+// Get the frequency for the current map and category combination
+const frequency = mapFrequencies[mapCategory] || 3;  // Default to 3 if no frequency is found
+console.log('Frequency used:', frequency);  // Log the frequency being used
+
+    
+    const imageNumber = Math.floor(Math.random() * frequency) + 1; // Random number based on frequency
+
 
     // Construct the image path based on the selected map and category
     const imagePath = `Maps/${currentMap}/${currentCategory}/${currentMap.toLowerCase()}_${currentCategory.toLowerCase()}-${imageNumber}.png`;
@@ -359,62 +394,50 @@ window.onload = function () {
     nextImage.onerror = () => alert('Failed to load image!');
 }
 
+// Submit guess
+function submitGuess() {
+    const userGuess = document.getElementById('guess').value.trim().toLowerCase();
+    const correctAnswer = currentMap.toLowerCase();
 
-    function submitGuess() {
-        const userGuess = document.getElementById('guess').value.trim();
-        const feedbackPopup = document.getElementById('feedbackPopup');
-
-        if (userGuess.toLowerCase() === currentMap.toLowerCase()) {
-            score += 20;
-            feedbackPopup.textContent = 'Correct!';
-            feedbackPopup.style.color = 'green';
-        } else {
-            feedbackPopup.textContent = `Incorrect! The correct answer was: ${currentMap}`;
-            feedbackPopup.style.color = 'red';
-        }
-
-        feedbackPopup.style.display = 'block';
-        setTimeout(() => {
-            feedbackPopup.style.display = 'none';
-            nextRound();
-        }, 1000);
-
+    if (userGuess === correctAnswer) {
+        score++;
         attempts++;
+        showPopup('correctPopup');
+    } else {
+        attempts++;
+        document.getElementById('correctAnswer').textContent = currentMap;
+        showPopup('incorrectPopup');
     }
 
-    function endGame() {
-        document.getElementById('game').style.display = 'none';
-        document.getElementById('score').style.display = 'block';
-        document.getElementById('finalScore').textContent = `Your Score: ${score} points`;
+    setTimeout(nextRound, 1000);
+}
 
-        const endPopup = document.getElementById('endPopup');
-        endPopup.style.display = 'block';
+// Show feedback popup
+function showPopup(popupId) {
+    const popup = document.getElementById(popupId);
+    popup.style.display = 'block';
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, 1000);
+}
 
-        const playAgainButton = document.createElement('button');
-        playAgainButton.textContent = 'Play Again';
-        playAgainButton.onclick = () => {
-            score = 0;
-            attempts = 0;
-            usedImages = [];
-            document.getElementById('score').style.display = 'none';
-            document.getElementById('categories').style.display = 'block';
-            document.getElementById('header').classList.remove('smaller');
-            endPopup.style.display = 'none';
-        };
+// End the game
+function endGame() {
+    document.getElementById('game').style.display = 'none';
+    document.getElementById('score').style.display = 'block';
+    document.getElementById('finalScore').textContent = score;
+    document.getElementById('endPopup').style.display = 'block';
+}
 
-        endPopup.appendChild(playAgainButton);
-    }
-
-    // Prevent right-click on the image
-    document.addEventListener('DOMContentLoaded', function() {
-        const mapImage = document.getElementById('mapImage');
-        mapImage.addEventListener('contextmenu', (event) => {
-            event.preventDefault();  // Disable right-click on the image
-            alert('Right-click is disabled for the image.');
-        });
-    });
+// Restart the game
+function restartGame() {
+    attempts = 0;
+    score = 0;
+    usedImages = [];
+    document.getElementById('endPopup').style.display = 'none';
+    document.getElementById('score').style.display = 'none';
+    document.getElementById('categories').style.display = 'block';
+}
 </script>
 
-
-</body>
 </html>
