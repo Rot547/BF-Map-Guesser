@@ -216,7 +216,7 @@
 
     <!-- Video Background -->
     <video id="video-background" autoplay loop muted volume="0.2">
-        <source src="flag.mp4" type="video/mp4">
+        <source src="gameplay1.mp4" type="video/mp4">
     </video>
 
     <!-- Header -->
@@ -274,6 +274,8 @@
     let usedImages = [];
 
     function startGame(category) {
+        console.log("Game started with difficulty: " + category);
+
         currentCategory = category;
         document.getElementById('categories').style.display = 'none';
         document.getElementById('game').style.display = 'block';
@@ -296,8 +298,9 @@
         currentMap = availableMaps[Math.floor(Math.random() * availableMaps.length)];
         usedImages.push(currentMap);
 
-        // Construct the image path based on the folder structure
         const imagePath = `Maps/${currentMap}/${currentCategory}/${currentMap.toLowerCase()}_${currentCategory.toLowerCase()}-2.png`;
+
+        console.log("Looking for image in: " + imagePath);
 
         const nextImage = new Image();
         nextImage.src = imagePath;
@@ -307,14 +310,16 @@
             document.getElementById('mapImage').style.opacity = 1;
             document.getElementById('guess').value = '';
         };
-        nextImage.onerror = () => alert('Failed to load image!');
+        nextImage.onerror = () => {
+            console.log('Failed to load image: ' + imagePath);
+            alert('Failed to load image!');
+        };
     }
 
     function submitGuess() {
         const userGuess = document.getElementById('guess').value.trim();
         const feedbackPopup = document.getElementById('feedbackPopup');
 
-        // Match the guess, case insensitive
         if (userGuess.toLowerCase() === currentMap.toLowerCase()) {
             score += 20;
             feedbackPopup.textContent = 'Correct!';
@@ -355,7 +360,17 @@
 
         endPopup.appendChild(playAgainButton);
     }
+
+    // Prevent right-click on the image
+    document.addEventListener('DOMContentLoaded', function() {
+        const mapImage = document.getElementById('mapImage');
+        mapImage.addEventListener('contextmenu', (event) => {
+            event.preventDefault();  // Disable right-click on the image
+            alert('Right-click is disabled for the image.');
+        });
+    });
 </script>
+
 
 </body>
 </html>
