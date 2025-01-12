@@ -438,6 +438,16 @@ function restartGame() {
     document.getElementById('score').style.display = 'none';
     document.getElementById('categories').style.display = 'block';
 }
+
+    // Prevent right-click on the image
+    document.addEventListener('DOMContentLoaded', function() {
+        const mapImage = document.getElementById('mapImage');
+        mapImage.addEventListener('contextmenu', (event) => {
+            event.preventDefault();  // Disable right-click on the image
+            alert('Right-click is disabled for the image.');
+        });
+    });
+
 </script>
 
 </html>
