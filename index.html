@@ -260,114 +260,101 @@
     </div>
 
 <script>
-const mapsFolder = 'Maps'; 
-const mapNames = [
-    'Ursprung', 'Bootcamp', 'Donner', 'Asylum', 'Anzio', 'Brittany', 'Casino', 'Hangar', 'Nezhit', 'Yards',
-    'Cliffside', 'Flakturm', 'Gdansk', 'Nuketown', 'Station', 'Storm', 'Inferno', 'Meadows', 'Shimajiri' 
-];
-const categories = {
-    easy: ['Ursprung', 'Bootcamp', 'Donner'], // example, populate with real maps for easy difficulty
-    medium: ['Brittany', 'Casino', 'Hangar'],
-    hard: ['Gdansk', 'Nuketown', 'Storm']
-};
+    const mapsFolder = 'Maps';
+    const mapNames = [
+        'Ursprung', 'Bootcamp', 'Donner', 'Asylum', 'Anzio', 'Brittany', 'Casino', 'Hangar', 'Nezhit', 'Yards',
+        'Cliffside', 'Flakturm', 'Gdansk', 'Nuketown', 'Station', 'Storm', 'Inferno', 'Meadows', 'Shimajiri' 
+    ];
+    let currentCategory = '';
+    let currentMap = '';
+    let currentImage = '';
+    let score = 0;
+    let attempts = 0;
+    const maxAttempts = 5;
+    let usedImages = [];
 
-let currentCategory = '';
-let currentMap = '';
-let currentImage = '';
-let score = 0;
-let attempts = 0;
-const maxAttempts = 5;
-let usedImages = [];
-
-// Start the game by selecting a category
-function startGame(category) {
-    currentCategory = category;
-    document.getElementById('categories').style.display = 'none';
-    document.getElementById('game').style.display = 'block';
-    document.getElementById('header').classList.add('smaller');
-    nextRound();
-}
-
-// Fetch a random map from the category and get the corresponding image
-function nextRound() {
-    if (attempts >= maxAttempts) {
-        endGame();
-        return;
-    }
-
-    let availableMaps = categories[currentCategory].filter(map => !usedImages.includes(map));
-    if (availableMaps.length === 0) {
-        usedImages = [];
-        availableMaps = categories[currentCategory];
-    }
-
-    // Select a random map from the available maps
-    currentMap = availableMaps[Math.floor(Math.random() * availableMaps.length)];
-    usedImages.push(currentMap);
-
-    // Generate the image path based on the selected map and category
-    const imageName = `${mapsFolder}/${currentCategory}/${currentMap}.png`; // assuming images are named this way
-    fetchImage(imageName);
-}
-
-// Fetch and display the image for the selected map
-function fetchImage(imagePath) {
-    const nextImage = new Image();
-    nextImage.src = imagePath;
-    nextImage.onload = () => {
-        currentImage = imagePath;
-        document.getElementById('mapImage').src = currentImage;
-        document.getElementById('mapImage').style.opacity = 1;
-        document.getElementById('guess').value = '';
-    };
-    nextImage.onerror = () => alert('Failed to load image!');
-}
-
-// Handle the submission of the user's guess
-function submitGuess() {
-    const userGuess = document.getElementById('guess').value.trim();
-    const feedbackPopup = document.getElementById('feedbackPopup');
-
-    if (userGuess.toLowerCase() === currentMap.toLowerCase()) {
-        score += 20;
-        feedbackPopup.textContent = 'Correct!';
-        feedbackPopup.style.color = 'green';
-    } else {
-        feedbackPopup.textContent = `Incorrect! The correct answer was: ${currentMap}`;
-        feedbackPopup.style.color = 'red';
-    }
-
-    feedbackPopup.style.display = 'block';
-    setTimeout(() => {
-        feedbackPopup.style.display = 'none';
+    function startGame(category) {
+        currentCategory = category;
+        document.getElementById('categories').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
+        document.getElementById('header').classList.add('smaller');
         nextRound();
-    }, 1000);
+    }
 
-    attempts++;
-}
+    function nextRound() {
+        if (attempts >= maxAttempts) {
+            endGame();
+            return;
+        }
 
-// End the game and show the final score
-function endGame() {
-    const endPopup = document.getElementById('endPopup');
-    
-    // Display the final score and the Play Again button
-    endPopup.innerHTML = `
-        <p>Your final score is: ${score}</p>
-        <button onclick="restartGame()">Play Again</button>
-    `;
-    
-    endPopup.style.display = 'block';
+        let availableMaps = mapNames.filter(map => !usedImages.includes(map));
+        if (availableMaps.length === 0) {
+            usedImages = [];
+            availableMaps = mapNames;
+        }
 
-    // Disable the input and submit button
-    document.getElementById('guess').disabled = true;
-    document.querySelector('#input-container button').disabled = true;
-}
+        currentMap = availableMaps[Math.floor(Math.random() * availableMaps.length)];
+        usedImages.push(currentMap);
 
-// Restart the game
-function restartGame() {
-    location.reload();  // Refresh the page to restart the game
-}
+        // Construct the image path based on the folder structure
+        const imagePath = `Maps/${currentMap}/${currentCategory}/${currentMap.toLowerCase()}_${currentCategory.toLowerCase()}-2.png`;
 
+        const nextImage = new Image();
+        nextImage.src = imagePath;
+        nextImage.onload = () => {
+            currentImage = imagePath;
+            document.getElementById('mapImage').src = currentImage;
+            document.getElementById('mapImage').style.opacity = 1;
+            document.getElementById('guess').value = '';
+        };
+        nextImage.onerror = () => alert('Failed to load image!');
+    }
+
+    function submitGuess() {
+        const userGuess = document.getElementById('guess').value.trim();
+        const feedbackPopup = document.getElementById('feedbackPopup');
+
+        // Match the guess, case insensitive
+        if (userGuess.toLowerCase() === currentMap.toLowerCase()) {
+            score += 20;
+            feedbackPopup.textContent = 'Correct!';
+            feedbackPopup.style.color = 'green';
+        } else {
+            feedbackPopup.textContent = `Incorrect! The correct answer was: ${currentMap}`;
+            feedbackPopup.style.color = 'red';
+        }
+
+        feedbackPopup.style.display = 'block';
+        setTimeout(() => {
+            feedbackPopup.style.display = 'none';
+            nextRound();
+        }, 1000);
+
+        attempts++;
+    }
+
+    function endGame() {
+        document.getElementById('game').style.display = 'none';
+        document.getElementById('score').style.display = 'block';
+        document.getElementById('finalScore').textContent = `Your Score: ${score} points`;
+
+        const endPopup = document.getElementById('endPopup');
+        endPopup.style.display = 'block';
+
+        const playAgainButton = document.createElement('button');
+        playAgainButton.textContent = 'Play Again';
+        playAgainButton.onclick = () => {
+            score = 0;
+            attempts = 0;
+            usedImages = [];
+            document.getElementById('score').style.display = 'none';
+            document.getElementById('categories').style.display = 'block';
+            document.getElementById('header').classList.remove('smaller');
+            endPopup.style.display = 'none';
+        };
+
+        endPopup.appendChild(playAgainButton);
+    }
 </script>
 
 </body>
