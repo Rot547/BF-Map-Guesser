@@ -352,7 +352,14 @@ const frequency = mapFrequencies[mapCategory] || 3;  // Default to 3 if no frequ
 
 
     // Construct the image path based on the selected map and category
-    const imagePath = `Maps/${currentMap}/${currentCategory}/${currentMap.toLowerCase()}_${currentCategory.toLowerCase()}-${imageNumber}.png`;
+const categoryMapping = {
+    medium: "Medium",
+    hard: "Hard",
+    easy: "Easy"
+};
+
+const fixedCategory = categoryMapping[currentCategory.toLowerCase()] || currentCategory;
+const imagePath = `Maps/${currentMap}/${fixedCategory}/${currentMap.toLowerCase()}_${currentCategory.toLowerCase()}-${imageNumber}.png`;
 
     const nextImage = new Image();
     nextImage.src = imagePath;
