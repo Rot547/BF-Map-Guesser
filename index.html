@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -154,25 +153,71 @@
             z-index: 5;
             display: none;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.75);
+            animation: fadeInOut 1s ease-in-out;
         }
 
-
-#endPopup button {
-    background-color: #ff4747;
-    color: white;
-    font-size: 1.2rem;
-    padding: 15px 30px;
-    margin-top: 20px; /* Add space above the button */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+#correctPopup {
+    background-color: rgba(0, 128, 0, 0.8); /* Green background for correct popup */
+    color: #fff;
+    animation: fadeInOut 1s ease-in-out;
 }
 
-#endPopup button:hover {
-    background-color: #666666;
+#incorrectPopup {
+    background-color: rgba(255, 0, 0, 0.8); /* Red background for incorrect popup */
+    color: #fff;
+    animation: fadeInOut 1s ease-in-out;
 }
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 2; }
+}
+
+.popup-end {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 350px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.6);
+    display: none;
+    z-index: 10000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#finalScoreText {
+    font-weight: bold;
+      
+}
+#maxAttempts {
+    font-weight: bold;
+      
+} 
+
+
+
+        #endPopup button {
+            display: block;
+            margin: 20px auto;
+            background-color: #ff4747;
+            color: white;
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #endPopup button:hover {
+            background-color: #666666;
+        }
 
 
         footer > div {
@@ -296,13 +341,6 @@
     </div>
 </div>
 
-<div id="score" style="display: none;">
-    <p><span id="finalScoreText"></span> / <span id="maxAttempts"></span></p>
-    <button onclick="document.getElementById('categories').style.display = 'block'; document.getElementById('score').style.display = 'none'; document.getElementById('start-button').style.display = 'none'; document.querySelector('h1').textContent = 'Select a difficulty:'; restartGame();">
-        Play Again
-    </button>
-</div>
-
 
 <footer>
     <div id="credits-button" style="cursor: pointer;"><u>Credits</u></div>
@@ -323,6 +361,14 @@
 
 <div class="popup" id="correctPopup">Correct!</div>
 <div class="popup" id="incorrectPopup">Incorrect! The correct answer was <span id="correctAnswer"></span></div>
+<div id="endPopup" class="popup-end">
+    <p>Your final score is:</p>
+    <p><span id="finalScoreText"></span> / <span id="maxAttempts"></span></p>
+    <button onclick="restartGame(); closeEndPopup();">Play Again</button>
+</div>
+  
+
+</div>
 
 <script>
 document.addEventListener('keydown', (event) => {
@@ -333,17 +379,26 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+function showEndPopup() {
+    document.getElementById('endPopup').style.display = 'block';
+    document.querySelector('h1').style.display = 'none';
+    document.getElementById('categories').style.visibility = 'hidden';
+    document.getElementById('game').style.visibility = 'hidden';
+}
+
+function closeEndPopup() {
+    document.getElementById('endPopup').style.display = 'none';
+    document.querySelector('h1').style.display = 'block';
+    document.getElementById('categories').style.visibility = 'visible';
+    document.getElementById('game').style.visibility = 'visible';
+}
 
 document.getElementById('credits-button').addEventListener('click', function() {
-    
     document.getElementById('creditsPopup').style.display = 'block';
     document.getElementById('start-button').style.visibility = 'hidden';
     document.querySelector('h1').style.display = 'none';
     document.getElementById('categories').style.visibility = 'hidden';
     document.getElementById('game').style.visibility = 'hidden';
-
-    
-    
 });
 
 
@@ -399,7 +454,7 @@ const mapFrequencies = {
 let currentMap = '';
 let currentCategory = '';
 let attempts = 0;
-let maxAttempts = 5;
+let maxAttempts = 1;
 let score = 0;
 let usedImages = [];
 let devtoolsOpened = false;
@@ -504,13 +559,12 @@ function showPopup(popupId) {
 // End the game
 function endGame() {
     document.getElementById('game').style.display = 'none';
-    document.getElementById('score').style.display = 'block';
-    document.querySelector('h1').textContent = 'Your Score:';
+    showEndPopup();
     document.getElementById('finalScoreText').textContent = score;
-    document.getElementById('maxAttempts').textContent = maxAttempts;
     document.getElementById('maxAttempts').textContent = maxAttempts;
     document.addEventListener('contextmenu', function(e) {
     e.preventDefault(); // Disable right-click
+ 
 });
 
 }
@@ -520,9 +574,15 @@ function restartGame() {
     attempts = 0;
     score = 0;
     usedImages = [];
-    document.getElementById('score').style.display = 'none';
     document.getElementById('categories').style.display = 'block';
+    document.getElementById('game').style.display = 'none';
+    document.querySelector('h1').textContent = 'Select a difficulty:';
 }
+
+document.getElementById('endPopup').querySelector('button').addEventListener('click', function() {
+    restartGame();
+    closeEndPopup();
+});
 
    document.addEventListener('DOMContentLoaded', function () {
     const mapImage = document.getElementById('mapImage');
