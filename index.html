@@ -15,7 +15,9 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: black;
+            background: url('placeholder.jpg') no-repeat center center fixed; /* Placeholder image for loading */
+            background-size: cover;
+            transition: background 0.3s ease-in-out;
         }
 
         #background-video {
@@ -26,12 +28,27 @@
             height: 100%;
             object-fit: cover;
             z-index: -1;
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+        }
+
+        #background-video.loaded {
+            opacity: 1;
         }
 
          #overlay {
             text-align: center;
         }
-
+        #loading-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: #ff4747;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
         h1 {
             font-size: 3rem;
             margin-bottom: 10px;
@@ -157,13 +174,13 @@
         }
 
 #correctPopup {
-    background-color: rgba(0, 128, 0, 0.8); /* Green background for correct popup */
+    background-color: rgba(0, 128, 0, 0.8); 
     color: #fff;
     animation: fadeInOut 1s ease-in-out;
 }
 
 #incorrectPopup {
-    background-color: rgba(255, 0, 0, 0.8); /* Red background for incorrect popup */
+    background-color: rgba(255, 0, 0, 0.8); 
     color: #fff;
     animation: fadeInOut 1s ease-in-out;
 }
@@ -320,8 +337,6 @@
         <h1>Blockfront Map Guesser</h1>
         <button id="start-button" onclick="document.getElementById('categories').style.display = 'block'; document.getElementById('start-button').style.display = 'none'; document.querySelector('h1').textContent = 'Select a difficulty:';">Play</button>
     
-
-
 
 <div id="categories">
     <div>
@@ -598,6 +613,12 @@ document.getElementById('endPopup').querySelector('button').addEventListener('cl
         if (event.key === 'Enter') {
             submitGuess();
         }
+    });
+
+    const backgroundVideo = document.getElementById('background-video');
+    backgroundVideo.addEventListener('canplaythrough', function () {
+        backgroundVideo.classList.add('loaded');
+        document.body.style.background = 'none'; 
     });
 });
 
