@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Map Guesser</title>
+    <title>Blockfront Map Guesser</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -11,62 +11,41 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-        }    
-
-        header {
-    background-color: rgba(50, 50, 50, 0.8);
-    color: #fff;
-    padding: 15px 0;
-    position: relative;
-    text-align: center;
-    z-index: 2;
-    font-size: 1.29rem;
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-    transition: all 0.3s ease-in-out;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-header h1 {
-    margin: 0;
-}
-
-#homeButton {
-    background-color: rgba(255, 71, 71, 0.7);
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 12px 20px;
-    cursor: pointer;
-    z-index: 3;
-    font-size: 1.2rem;
-    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    position: absolute;
-    left: 20px; /* Adjust this value as needed */
-}
-
-          #homeButton:hover {
-           background-color: rgba(255, 71, 71, 1);
-       }
-
-          #homeButton:hover {
-            background-color: rgba(255, 71, 71, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: black;
         }
 
-        .category {
-            position: relative;
-            z-index: 2;
-            margin: 40px auto;
-            padding: 40px;
-            background-color: rgba(25, 25, 25, 0.7);
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+         #overlay {
             text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        .buttons {
+            display: none;
         }
 
         button {
@@ -83,7 +62,7 @@ header h1 {
         }
 
         button:hover {
-            background-color: #ff3333;
+            background-color: #666666;
         }
 
         footer {
@@ -103,44 +82,26 @@ header h1 {
             padding: 10px 20px;
         }
 
-        footer > div {
-        flex: 1; 
-        }
-
-        footer a {
-            color: #ff4747;
-            text-decoration: none;
-        }
-
-       footer .centered {
-       text-align: center;
-       flex: 1; 
-       display: inline-block; 
-       }
-
-        footer a {
-            text-decoration: underline;
-        }
-
-        footer .small-text {
-        font-size: 0.7rem; 
-        line-height: 1.3;
-        padding: 10 40px;
-        white-space: normal; 
-        word-wrap: break-word; 
-        }
-
-
-        #game, #score {
+ #game, #score {
             position: relative;
             z-index: 2;
         }
+ .category {
+            position: relative;
+            z-index: 2;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: rgba(25, 25, 25, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            text-align: center;
+        }
 
-        /* Image Container */
         #image-container {
             width: 90%;
             max-width: 980px;
-            max-height: 520px;
+            max-height: 500px;
             margin: 0 auto;
             overflow: hidden;
             border-radius: 15px;
@@ -179,7 +140,6 @@ header h1 {
             vertical-align: middle;
         }
 
-        /* Centered Feedback Popup */
         .popup {
             position: fixed;
             top: 50%;
@@ -195,59 +155,96 @@ header h1 {
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
         }
 
-        /* End Screen Popup */
-        .popup-end {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            font-size: 1.5rem;
-            z-index: 5;
-            display: none;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+
+#endPopup button {
+    background-color: #ff4747;
+    color: white;
+    font-size: 1.2rem;
+    padding: 15px 30px;
+    margin-top: 20px; /* Add space above the button */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+#endPopup button:hover {
+    background-color: #666666;
+}
+
+
+        footer > div {
+        flex: 1; 
         }
 
-        #endPopup button {
-            display: block;
-            margin: 20px auto;
-            background-color: #ff4747;
-            color: white;
-            font-size: 1.2rem;
-            padding: 15px 30px;
-            margin: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        footer a {
+            color: #ff4747;
+            text-decoration: none;
         }
 
-        #endPopup button:hover {
-            background-color: #ff3333;
+       footer .centered {
+       text-align: center;
+       flex: 1; 
+       display: inline-block; 
+       }
+
+        footer a {
+            text-decoration: underline;
         }
+
+        footer .small-text {
+        font-size: 0.7rem; 
+        line-height: 1.3;
+        padding: 10 40px;
+        white-space: normal; 
+        word-wrap: break-word; 
+        }
+        
+        #categories {
+    display: none;
+}
+
+#start-button {
+    background-color: #ff4747; 
+    color: white; 
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#start-button:hover {
+    background-color: #666666;
+}
+
+
+
     </style>
 </head>
 <body>
+    <video id="background-video" autoplay muted loop>
+        <source src="https://www.dropbox.com/scl/fi/t9asm11vbin1fny550zbu/gameplay1.mp4?rlkey=9hztys5j8oc3kzrmsjius7tnt&st=d7y595dh&raw=1" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
-<!-- Header -->
-<header id="header">
-    <button id="homeButton" onclick="window.location.reload();">Home</button>
-    <h1>Blockfront Map Guesser</h1>
-</header>
+    <div id="overlay">
+        <h1>Blockfront Map Guesser</h1>
+        <button id="start-button" onclick="document.getElementById('categories').style.display = 'block'; document.getElementById('start-button').style.display = 'none'; document.querySelector('h1').textContent = 'Select a difficulty:';">Play</button>
 
-<!-- Category Buttons -->
+
+
+
 <div id="categories">
-    <div class="category">
+    <div>
         <button onclick="startGame('easy')">Easy</button>
         <button onclick="startGame('medium')">Medium</button>
         <button onclick="startGame('hard')">Hard</button>
     </div>
 </div>
-
+      
 <div id="game" style="display: none;">
     <div id="image-container">
         <img id="mapImage" src="" alt="Map Screenshot">
@@ -259,9 +256,12 @@ header h1 {
 </div>
 
 <div id="score" style="display: none;">
-    <h2>Your Score</h2>
-    <p id="finalScore"></p>
+    <p><span id="finalScoreText"></span> / <span id="maxAttempts"></span></p>
+    <button onclick="document.getElementById('categories').style.display = 'block'; document.getElementById('score').style.display = 'none'; document.getElementById('start-button').style.display = 'none'; document.querySelector('h1').textContent = 'Select a difficulty:'; restartGame();">
+        Play Again
+    </button>
 </div>
+
 
 <footer>
     <div>Special thanks to R The sombrero man | <a href="https://github.com/themrburns/" target="_blank">Github</a></div>
@@ -275,13 +275,18 @@ header h1 {
 <div class="popup" id="correctPopup">Correct!</div>
 <div class="popup" id="incorrectPopup">Incorrect! The correct answer was <span id="correctAnswer"></span></div>
 
-<div class="popup-end" id="endPopup">
-    <h2>Game Over!</h2>
-    <p>Your final score is <span id="finalScoreText"></span> / <span id="maxAttempts"></span></p>
-    <button onclick="restartGame()">Play Again</button>
-</div>
+    <script>
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space') {
+        document.getElementById('start-button').style.display = 'none';
+        document.getElementById('categories').style.display = 'block';
+        document.querySelector('h1').textContent = 'Select a difficulty:';
+    }
+});
 
-<script>
+
+
+
 // Map frequencies based on the provided values 
 const mapFrequencies = {
     'Flakturm-Medium': 6,
@@ -322,7 +327,7 @@ const mapFrequencies = {
 let currentMap = '';
 let currentCategory = '';
 let attempts = 0;
-let maxAttempts = 4;
+let maxAttempts = 5;
 let score = 0;
 let usedImages = [];
 let devtoolsOpened = false;
@@ -331,12 +336,6 @@ const checkDevTools = () => {
     const width = window.innerWidth;
     const height = window.innerHeight;
     
-    if (width <= 100 || height <= 100) {  // Developer tools open usually changes the window dimensions (Trying to detect Console Cheats etc.)
-        devtoolsOpened = true;
-        alert("Developer tools detected! Cheating is not allowed.");
-    }
-};
-
 setInterval(checkDevTools, 1000);
 
 
@@ -350,7 +349,9 @@ const mapNames = [
 function startGame(category) {
     currentCategory = category;
     document.getElementById('categories').style.display = 'none';
+    document.getElementById('start-button').style.display = 'none';
     document.getElementById('game').style.display = 'block';
+    document.querySelector('h1').textContent = 'BlockFront Map Guesser'; // Update title
     nextRound();
 }
 
@@ -436,10 +437,10 @@ function showPopup(popupId) {
 function endGame() {
     document.getElementById('game').style.display = 'none';
     document.getElementById('score').style.display = 'block';
-    document.getElementById('finalScore').textContent = score;
+    document.querySelector('h1').textContent = 'Your Score:';
     document.getElementById('finalScoreText').textContent = score;
     document.getElementById('maxAttempts').textContent = maxAttempts;
-    document.getElementById('endPopup').style.display = 'block';
+    document.getElementById('maxAttempts').textContent = maxAttempts;
     document.addEventListener('contextmenu', function(e) {
     e.preventDefault(); // Disable right-click
 });
@@ -451,27 +452,36 @@ function restartGame() {
     attempts = 0;
     score = 0;
     usedImages = [];
-    document.getElementById('endPopup').style.display = 'none';
     document.getElementById('score').style.display = 'none';
     document.getElementById('categories').style.display = 'block';
 }
 
-    // Prevent right-click on the image
-    document.addEventListener('DOMContentLoaded', function() {
-        const mapImage = document.getElementById('mapImage');
-        mapImage.addEventListener('contextmenu', (event) => {
-            event.preventDefault();  // Disable right-click on the image
-            
-        });
+   document.addEventListener('DOMContentLoaded', function () {
+    const mapImage = document.getElementById('mapImage');
+    
+    // Disable right-click on the image
+    mapImage.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
     });
 
     // Add an event listener to submit the guess on Enter key
+    const guessInput = document.getElementById('guess');
+    guessInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            submitGuess();
+        }
+    });
+});
+
+
+    // Event listener to submit guess on 'Enter'
 document.getElementById('guess').addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
         submitGuess();
     }
 });
 
-</script>
 
+    </script>
+</body>
 </html>
