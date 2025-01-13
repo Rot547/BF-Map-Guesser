@@ -29,11 +29,11 @@
             object-fit: cover;
             z-index: -1;
             transition: opacity 0.3s ease-in-out;
-            opacity: 0; 
+            opacity: 0; /* Initially hidden */
         }
 
         #background-video.loaded {
-            opacity: 1; 
+            opacity: 1; /* Show video when loaded */
         }
 
          #overlay {
@@ -174,13 +174,13 @@
         }
 
 #correctPopup {
-    background-color: rgba(0, 128, 0, 0.8);
+    background-color: rgba(0, 128, 0, 0.8); /* Green background for correct popup */
     color: #fff;
     animation: fadeInOut 1s ease-in-out;
 }
 
 #incorrectPopup {
-    background-color: rgba(255, 0, 0, 0.8); 
+    background-color: rgba(255, 0, 0, 0.8); /* Red background for incorrect popup */
     color: #fff;
     animation: fadeInOut 1s ease-in-out;
 }
@@ -533,7 +533,7 @@ const mapNames = [
     'Flakturm', 'Yards', 'Nezhit', 'Hangar', 'Meadows', 'Cliffside', 'Nuketown', 'Donner',
     'Gdansk', 'Station', 'Cliffside', 'Inferno', 'Shimajiri', 'Bootcamp', 'Inferno', 'Nuketown',
     'Storm', 'Brittany', 'Shimajiri', 'Asylum', 'Anzio', 'Ursprung', 'Brittany', 'Nezhit', /* 'Beached',
-     'Avalanche', 'Mammut' */
+    'Avalanche', 'Mammut', */ 'Jagd'
 ];
 
 // Start the game
@@ -665,6 +665,7 @@ function restartGame() {
     document.getElementById('categories').style.display = 'block';
     document.getElementById('game').style.display = 'none';
     document.querySelector('h1').textContent = 'Select a difficulty:';
+    currentMap = '';
 }
 
 document.getElementById('endPopup').querySelector('button').addEventListener('click', function() {
