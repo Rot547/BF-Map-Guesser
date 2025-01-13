@@ -275,18 +275,7 @@
 <div class="popup" id="correctPopup">Correct!</div>
 <div class="popup" id="incorrectPopup">Incorrect! The correct answer was <span id="correctAnswer"></span></div>
 
-    <script>
-document.addEventListener('keydown', (event) => {
-    if (event.code === 'Space') {
-        document.getElementById('start-button').style.display = 'none';
-        document.getElementById('categories').style.display = 'block';
-        document.querySelector('h1').textContent = 'Select a difficulty:';
-    }
-});
-
-
-
-
+<script>
 // Map frequencies based on the provided values 
 const mapFrequencies = {
     'Flakturm-Medium': 6,
@@ -332,11 +321,7 @@ let score = 0;
 let usedImages = [];
 let devtoolsOpened = false;
 
-const checkDevTools = () => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    
-setInterval(checkDevTools, 1000);
+
 
 
 const mapNames = [
