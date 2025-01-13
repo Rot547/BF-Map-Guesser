@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -233,7 +234,7 @@
     <div id="overlay">
         <h1>Blockfront Map Guesser</h1>
         <button id="start-button" onclick="document.getElementById('categories').style.display = 'block'; document.getElementById('start-button').style.display = 'none'; document.querySelector('h1').textContent = 'Select a difficulty:';">Play</button>
-    </div>
+    
 
 
 
@@ -275,7 +276,18 @@
 <div class="popup" id="correctPopup">Correct!</div>
 <div class="popup" id="incorrectPopup">Incorrect! The correct answer was <span id="correctAnswer"></span></div>
 
-<script>
+    <script>
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space') {
+        document.getElementById('start-button').style.display = 'none';
+        document.getElementById('categories').style.display = 'block';
+        document.querySelector('h1').textContent = 'Select a difficulty:';
+    }
+});
+
+
+
+
 // Map frequencies based on the provided values 
 const mapFrequencies = {
     'Flakturm-Medium': 6,
