@@ -146,14 +146,14 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.6);
             color: #fff;
             padding: 20px;
             border-radius: 15px;
             font-size: 1.5rem;
             z-index: 5;
             display: none;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.75);
         }
 
 
@@ -192,6 +192,7 @@
 
         footer a {
             text-decoration: underline;
+            color: inherit;
         }
 
         footer .small-text {
@@ -220,6 +221,45 @@
 #start-button:hover {
     background-color: #666666;
 }
+
+#creditsPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    font-size: 1.5rem;
+    z-index: 5;
+    display: none;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+    
+}
+
+#creditsPopup a {
+        color: inherit;
+        text-decoration: underline; 
+    }
+
+#creditsPopup button {
+    background-color: #ff4747;
+    color: white;
+    font-size: 1.2rem;
+    padding: 15px 30px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+#creditsPopup button:hover {
+    background-color: #666666;
+}
+
 
 
 
@@ -265,7 +305,7 @@
 
 
 <footer>
-    <div>Special thanks to R The sombrero man | <a href="https://github.com/themrburns/" target="_blank">Github</a></div>
+    <div id="credits-button" style="cursor: pointer;"><u>Credits</u></div>
     <div class="centered">Made by Rotblitz | <a href="https://www.github.com/Rot547" target="_blank">GitHub</a></div>
     <div class="small-text">Not owned by or affiliated<br>
         with the official<br>
@@ -273,10 +313,18 @@
     </div>
 </footer>
 
+<div class="popup" id="creditsPopup">
+    <p>Made by Rotblitz | <a href="https://www.github.com/Rot547" target="_blank">GitHub</a></p>
+    <p>Special thanks to R the Sombrero Man | <a href="https://github.com/themrburns/" target="_blank">GitHub</a></p>
+    <p>TNT1243 for contributing map images (Mainly Beached) | <a href="https://www.planetminecraft.com/member/tnt1243/" target="_blank">Planet Minecraft</a></p>
+    <button onclick="closeCreditsPopup()">Close</button>
+</div>
+
+
 <div class="popup" id="correctPopup">Correct!</div>
 <div class="popup" id="incorrectPopup">Incorrect! The correct answer was <span id="correctAnswer"></span></div>
 
-    <script>
+<script>
 document.addEventListener('keydown', (event) => {
     if (event.code === 'Space') {
         document.getElementById('start-button').style.display = 'none';
@@ -285,6 +333,29 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+
+document.getElementById('credits-button').addEventListener('click', function() {
+    
+    document.getElementById('creditsPopup').style.display = 'block';
+    document.getElementById('start-button').style.visibility = 'hidden';
+    document.querySelector('h1').style.display = 'none';
+    document.getElementById('categories').style.visibility = 'hidden';
+    document.getElementById('game').style.visibility = 'hidden';
+
+    
+    
+});
+
+
+function closeCreditsPopup() {
+    document.getElementById('creditsPopup').style.display = 'none';
+    document.getElementById('start-button').style.visibility = 'visible';
+    document.querySelector('h1').style.display = 'block';
+    document.getElementById('categories').style.visibility = 'visible';
+    document.getElementById('game').style.visibility = 'visible';
+
+    
+}
 
 
 
