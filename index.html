@@ -29,11 +29,11 @@
             object-fit: cover;
             z-index: -1;
             transition: opacity 0.3s ease-in-out;
-            opacity: 0; /* Initially hidden */
+            opacity: 0; 
         }
 
         #background-video.loaded {
-            opacity: 1; /* Show video when loaded */
+            opacity: 1; 
         }
 
          #overlay {
@@ -393,14 +393,6 @@ function initializeGame() {
     document.querySelector('h1').textContent = 'Select a difficulty:';
 }
 
-
-document.addEventListener('keydown', (event) => {
-    if (event.code === 'Space') {
-        document.getElementById('start-button').style.display = 'none';
-        document.getElementById('categories').style.display = 'block';
-        document.querySelector('h1').textContent = 'Select a difficulty:';
-    }
-});
 
 function showEndPopup() {
     document.getElementById('endPopup').style.display = 'block';
