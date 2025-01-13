@@ -467,45 +467,69 @@ function resetPageContents() {
 
 // Map frequencies based on the provided values 
 const mapFrequencies = {
-    'Flakturm-Medium': 6,
-    'Yards-Medium': 20,
-    'Yards-Hard': 7,
-    'Nezhit-Easy': 9,
-    'Hangar-Medium': 11,
-    'Meadows-Medium': 6,
-    'Cliffside-Medium': 9,
-    'Nuketown-Hard': 2,
-    'Donner-Hard': 15,
-    'Gdansk-Hard': 7,
-    'Hangar-Easy': 12,
-    'Station-Easy': 24,
-    'Cliffside-Hard': 7,
-    'Inferno-Hard': 12,
-    'Shimajiri-Easy': 8,
-    'Bootcamp-Easy': 8,
-    'Shimajiri-Medium': 6,
-    'Inferno-Medium': 28,
-    'Nuketown-Medium': 9,
-    'Storm-Medium': 14,
-    'Brittany-Hard': 9,
-    'Station-Medium': 12,
-    'Brittany-Easy': 22,
-    'Shimajiri-Hard': 1,
-    'Storm-Hard': 5,
-    'Asylum-Medium': 5,
     'Anzio-Easy': 19,
-    'Ursprung-Medium': 8,
+    'Anzio-Hard': 4,
+    'Anzio-Medium': 25,
+    'Asylum-Easy': 5,
+    'Asylum-Hard': 4,
+    'Asylum-Medium': 5,
+    'Bootcamp-Easy': 8,
+    'Bootcamp-Hard': 4,
+    'Bootcamp-Medium': 6,
+    'Brittany-Easy': 22,
+    'Brittany-Hard': 9,
     'Brittany-Medium': 21,
+    'Casino-Easy': 2,
+    'Casino-Hard': 2,
+    'Casino-Medium': 3,
+    'Cliffside-Easy': 14,
+    'Cliffside-Hard': 7,
+    'Cliffside-Medium': 9,
+    'Donner-Easy': 21,
+    'Donner-Hard': 15,
+    'Donner-Medium': 23,
+    'Flakturm-Easy': 12,
+    'Flakturm-Hard': 1,
+    'Gdansk-Easy': 15,
+    'Gdansk-Hard': 7,
+    'Gdansk-Medium': 11,
+    'Hangar-Easy': 12,
+    'Hangar-Hard': 4,
+    'Hangar-Medium': 11,
+    'Inferno-Easy': 18,
+    'Inferno-Hard': 12,
+    'Inferno-Medium': 28,
+    'Meadows-Easy': 5,
+    'Meadows-Hard': 3,
+    'Meadows-Medium': 6,
+    'Nezhit-Easy': 9,
+    'Nezhit-Hard': 4,
     'Nezhit-Medium': 7,
-    'Station-Hard': 1,
     'Nuketown-Easy': 12,
-    
+    'Nuketown-Hard': 2,
+    'Nuketown-Medium': 9,
+    'Shimajiri-Easy': 8,
+    'Shimajiri-Hard': 1,
+    'Shimajiri-Medium': 6,
+    'Station-Easy': 24,
+    'Station-Hard': 1,
+    'Station-Medium': 12,
+    'Storm-Easy': 17,
+    'Storm-Hard': 5,
+    'Storm-Medium': 14,
+    'Ursprung-Easy': 7,
+    'Ursprung-Hard': 4,
+    'Ursprung-Medium': 8,
+    'Yards-Easy': 12,
+    'Yards-Hard': 7,
+    'Yards-Medium': 20
 };
+
 
 let currentMap = '';
 let currentCategory = '';
 let attempts = 0;
-let maxAttempts = 1;
+let maxAttempts = 5;
 let score = 0;
 let usedImages = [];
 let devtoolsOpened = false;
@@ -516,7 +540,8 @@ let devtoolsOpened = false;
 const mapNames = [
     'Flakturm', 'Yards', 'Nezhit', 'Hangar', 'Meadows', 'Cliffside', 'Nuketown', 'Donner',
     'Gdansk', 'Station', 'Cliffside', 'Inferno', 'Shimajiri', 'Bootcamp', 'Inferno', 'Nuketown',
-    'Storm', 'Brittany', 'Shimajiri', 'Asylum', 'Anzio', 'Ursprung', 'Brittany', 'Nezhit'
+    'Storm', 'Brittany', 'Shimajiri', 'Asylum', 'Anzio', 'Ursprung', 'Brittany', 'Nezhit', 'Beached',
+    'Avalanche', 'Mammut'
 ];
 
 // Start the game
@@ -583,8 +608,14 @@ const imagePath = `Maps/${currentMap}/${fixedCategory}/${currentMap.toLowerCase(
 
 // Submit guess
 function submitGuess() {
-    const userGuess = document.getElementById('guess').value.trim().toLowerCase();
+    let userGuess = document.getElementById('guess').value.trim().toLowerCase();
     const correctAnswer = currentMap.toLowerCase();
+
+    // Automatically change "yard" to "Bootcamp"
+    if (userGuess === 'yard') {
+        userGuess = 'bootcamp';
+        document.getElementById('guess').value = 'Bootcamp'; // Update the input field to show the change
+    }
 
     if (userGuess === correctAnswer) {
         score++;
@@ -598,6 +629,19 @@ function submitGuess() {
 
     setTimeout(nextRound, 1000);
 }
+
+// Function to set the next map
+function setNextMap(mapName) {
+    if (mapNames.includes(mapName)) {
+        currentMap = mapName;
+        console.log(`Next map set to: ${mapName}`);
+    } else {
+        console.error(`Map name "${mapName}" is not valid.`);
+    }
+}
+
+// Expose the function to the global scope
+window.setNextMap = setNextMap;
 
 // Show feedback popup
 function showPopup(popupId) {
@@ -666,6 +710,9 @@ document.getElementById('guess').addEventListener('keydown', function (event) {
         submitGuess();
     }
 });
+
+
 </script>
 </body>
 </html>
+
