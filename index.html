@@ -654,9 +654,6 @@ function nextRound() {
 // Determine the category and construct the map identifier
 const mapCategory = `${currentMap}-${currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1).toLowerCase()}`;
 
-console.log('mapCategory:', mapCategory);
-
-
 // Get the frequency for the current map and category combination
 const frequency = mapFrequencies[mapCategory] || 3;  // Default to 3 if no frequency is found
 
