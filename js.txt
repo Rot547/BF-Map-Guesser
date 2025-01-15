@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Guesser</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }    
+
+        /* When the video is loaded, remove the overlay */
+        #video-background.loaded + #video-overlay {
+            display: none;
+        }
+
+        header.smaller {
+            font-size: 2rem;
+            padding: 10px 0;
+        }
+
+        #homeButton {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            background-color: rgba(255, 71, 71, 0.7);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            cursor: pointer;
+            z-index: 3;
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        #homeButton:hover {
+            background-color: rgba(255, 71, 71, 1);
+        }
+
+        .category {
+            position: relative;
+            z-index: 2;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: rgba(25, 25, 25, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #ff4747;
+            color: white;
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        button:hover {
+            background-color: #ff3333;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(50, 50, 50, 0.9);
+            color: #ff4747;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            font-size: 1rem;
+            z-index: 2;
+        }
+
+        footer a {
+            color: #ff4747;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        #game, #score {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Image Container */
+        #image-container {
+            width: 90%;
+            max-width: 980px;
+            height: auto;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+            border: 5px solid #ff4747;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        #mapImage {
+            width: 100%;
+            height: auto;
+            transition: opacity 1s ease-in-out;
+        }
+
+        #input-container {
+            position: relative;
+            z-index: 2;
+            margin: 0 auto;
+            width: 90%;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        #guess {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ff4747;
+            border-radius: 5px;
+            flex-grow: 1;
+            max-width: 200px;
+            height: 20px;
+            vertical-align: middle;
+        }
+
+        /* Centered Feedback Popup */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            z-index: 5;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        /* End Screen Popup */
+        .popup-end {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            z-index: 5;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        #endPopup button {
+            display: block;
+            margin: 20px auto;
+            background-color: #ff4747;
+            color: white;
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #endPopup button:hover {
+            background-color: #ff3333;
+        }
+    </style>
+</head>
+<body>
+
+
+<!-- Header -->
+<header id="header">
+    <button id="homeButton" onclick="window.location.reload();">Home</button>
+    <h1>Blockfront Map Guesser</h1>
+</header>
+
+<!-- Category Buttons -->
+<div id="categories">
+    <div class="category">
+        <button onclick="startGame('easy')">Easy</button>
+        <button onclick="startGame('medium')">Medium</button>
+        <button onclick="startGame('hard')">Hard</button>
+    </div>
+</div>
+
+<div id="game" style="display: none;">
+    <div id="image-container">
+        <img id="mapImage" src="" alt="Map Screenshot">
+    </div>
+    <div id="input-container">
+        <input type="text" id="guess" placeholder="Enter map name">
+        <button onclick="submitGuess()">Submit</button>
+    </div>
+</div>
+
+<div id="score" style="display: none;">
+    <h2>Your Score</h2>
+    <p id="finalScore"></p>
+</div>
+
+<footer>
+    <p>Made by Rotblitz | <a href="https://www.github.com/Rotblitz" target="_blank">GitHub</a></p>
+</footer>
+
+<div class="popup" id="correctPopup">Correct!</div>
+<div class="popup" id="incorrectPopup">Incorrect! The correct answer was <span id="correctAnswer"></span></div>
+
+<div class="popup-end" id="endPopup">
+    <h2>Game Over!</h2>
+      <p>Your final score is <span id="finalScoreText"></span> / <span id="maxAttempts"></span></p>
+    <button onclick="restartGame()">Play Again</button>
+</div>
+
+<script>
+// Map frequencies based on the provided values 
+const mapFrequencies = {
+    'Flakturm-Medium': 6,
+    'Yards-Medium': 20,
+    'Yards-Hard': 7,
+    'Nezhit-Easy': 9,
+    'Hangar-Medium': 11,
+    'Meadows-Medium': 6,
+    'Cliffside-Medium': 9,
+    'Nuketown-Hard': 2,
+    'Donner-Hard': 15,
+    'Gdansk-Hard': 7,
+    'Hangar-Easy': 12,
+    'Station-Easy': 24,
+    'Cliffside-Hard': 7,
+    'Inferno-Hard': 12,
+    'Shimajiri-Easy': 8,
+    'Bootcamp-Easy': 8,
+    'Shimajiri-Medium': 6,
+    'Inferno-Medium': 28,
+    'Nuketown-Medium': 9,
+    'Storm-Medium': 14,
+    'Brittany-Hard': 9,
+    'Station-Medium': 12,
+    'Brittany-Easy': 22,
+    'Shimajiri-Hard': 1,
+    'Storm-Hard': 5,
+    'Asylum-Medium': 5,
+    'Anzio-Easy': 19,
+    'Ursprung-Medium': 8,
+    'Brittany-Medium': 21,
+    'Nezhit-Medium': 7,
+    'Station-Hard': 1,
+    'Nuketown-Easy': 12,
+    
+};
+
+let currentMap = '';
+let currentCategory = '';
+let attempts = 0;
+let maxAttempts = 4;
+let score = 0;
+let usedImages = [];
+let devtoolsOpened = false;
+
+const checkDevTools = () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    
+    if (width <= 100 || height <= 100) {  // Developer tools open usually changes the window dimensions (Trying to detect Console Cheats etc.)
+        devtoolsOpened = true;
+        alert("Developer tools detected! Cheating is not allowed.");
+    }
+};
+
+$(window).resize(function() {
+  console.log('window was resized');
+});
+
+setInterval(checkDevTools, 1000);
+
+
+const mapNames = [
+    'Flakturm', 'Yards', 'Nezhit', 'Hangar', 'Meadows', 'Cliffside', 'Nuketown', 'Donner',
+    'Gdansk', 'Station', 'Cliffside', 'Inferno', 'Shimajiri', 'Bootcamp', 'Inferno', 'Nuketown',
+    'Storm', 'Brittany', 'Shimajiri', 'Asylum', 'Anzio', 'Ursprung', 'Brittany', 'Nezhit'
+];
+
+// Start the game
+function startGame(category) {
+    currentCategory = category;
+    document.getElementById('categories').style.display = 'none';
+    document.getElementById('game').style.display = 'block';
+    nextRound();
+}
+
+// Start the next round
+function nextRound() {
+    if (attempts >= maxAttempts) {
+        endGame();
+        return;
+    }
+
+    // Filter out already used maps
+    let availableMaps = mapNames.filter(map => !usedImages.includes(map));
+    if (availableMaps.length === 0) {
+        usedImages = [];
+        availableMaps = mapNames;
+    }
+
+    // Pick a random map from the available maps
+    currentMap = availableMaps[Math.floor(Math.random() * availableMaps.length)];
+    usedImages.push(currentMap);
+
+// Determine the category and construct the map identifier
+const mapCategory = `${currentMap}-${currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1).toLowerCase()}`;
+
+console.log('Constructed mapCategory:', mapCategory); // Check the final value of mapCategory
+
+// Get the frequency for the current map and category combination
+const frequency = mapFrequencies[mapCategory] || 3;  // Default to 3 if no frequency is found
+
+    
+    const imageNumber = Math.floor(Math.random() * frequency) + 1; // Random number based on frequency
+
+
+    // Construct the image path based on the selected map and category
+    const imagePath = `Maps/${currentMap}/${currentCategory}/${currentMap.toLowerCase()}_${currentCategory.toLowerCase()}-${imageNumber}.png`;
+
+    const nextImage = new Image();
+    nextImage.src = imagePath;
+    nextImage.onload = () => {
+        currentImage = imagePath;
+        document.getElementById('mapImage').src = currentImage;
+        document.getElementById('mapImage').style.opacity = 1;
+        document.getElementById('guess').value = '';
+    };
+    nextImage.onerror = () => alert('Failed to load image!');
+}
+
+// Submit guess
+function submitGuess() {
+    const userGuess = document.getElementById('guess').value.trim().toLowerCase();
+    const correctAnswer = currentMap.toLowerCase();
+
+    if (userGuess === correctAnswer) {
+        score++;
+        attempts++;
+        showPopup('correctPopup');
+    } else {
+        attempts++;
+        document.getElementById('correctAnswer').textContent = currentMap;
+        showPopup('incorrectPopup');
+    }
+
+    setTimeout(nextRound, 1000);
+}
+
+// Show feedback popup
+function showPopup(popupId) {
+    const popup = document.getElementById(popupId);
+    popup.style.display = 'block';
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, 1000);
+}
+
+// End the game
+function endGame() {
+    document.getElementById('game').style.display = 'none';
+    document.getElementById('score').style.display = 'block';
+    document.getElementById('finalScore').textContent = score;
+    document.getElementById('finalScoreText').textContent = score;
+    document.getElementById('maxAttempts').textContent = maxAttempts;
+    document.getElementById('endPopup').style.display = 'block';
+    document.addEventListener('contextmenu', function(e) {
+    e.preventDefault(); // Disable right-click
+});
+
+}
+
+// Restart the game
+function restartGame() {
+    attempts = 0;
+    score = 0;
+    usedImages = [];
+    document.getElementById('endPopup').style.display = 'none';
+    document.getElementById('score').style.display = 'none';
+    document.getElementById('categories').style.display = 'block';
+}
+
+    // Prevent right-click on the image
+    document.addEventListener('DOMContentLoaded', function() {
+        const mapImage = document.getElementById('mapImage');
+        mapImage.addEventListener('contextmenu', (event) => {
+            event.preventDefault();  // Disable right-click on the image
+            
+        });
+    });
+</script>
+
+</html>

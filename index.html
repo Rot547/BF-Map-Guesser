@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blockfront Map Guesser</title>
     <style>
+
+@font-face { font-family: 'Minecraft'; src: url('Monocraft.ttf'); } 
+@font-face { font-family: 'Minecraft'; font-weight: bold; src: url('Monocraft.ttf');}
+
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Minecraft';
             color: #fff;
             margin: 0;
             padding: 0;
@@ -66,6 +70,7 @@
         }
 
         button {
+            font-family: 'Minecraft';
             background-color: #ff4747;
             color: white;
             font-size: 1.2rem;
@@ -135,6 +140,7 @@
         }
 
         #input-container {
+            font-family: 'Minecraft';
             position: relative;
             z-index: 2;
             margin: 0 auto;
@@ -147,6 +153,7 @@
         }
 
         #guess {
+            font-family: 'Minecraft';
             padding: 15px;
             font-size: 1.2rem;
             border: 2px solid #ff4747;
@@ -270,6 +277,8 @@
 }
 
 #start-button {
+    font-family: 'Minecraft';
+    vertical-align: middle;
     background-color: #ff4747; 
     color: white; 
     border: none;
@@ -306,6 +315,7 @@
     }
 
 #creditsPopup button {
+    font-family: 'Minecraft';
     background-color: #ff4747;
     color: white;
     font-size: 1.2rem;
@@ -378,7 +388,7 @@
 <button id="toggle-video-button" onclick="toggleVideo()">Toggle Video</button>
 
 <footer>
-    <div id="credits-button" style="cursor: pointer;"><u>Credits</u></div>
+    <div id="credits-button" style="cursor: pointer;"><u>Credits</u> / <a href="https://github.com/Rot547/BF-Map-Guesser/issues" target="_blank">Bugs</a></div> 
     <div class="centered">Made by Rotblitz | <a href="https://www.github.com/Rot547" target="_blank">GitHub</a></div>
     <div class="small-text">Not owned by or affiliated<br>
         with the official<br>
@@ -389,7 +399,7 @@
 <div class="popup" id="creditsPopup">
     <p>Made by Rotblitz | <a href="https://www.github.com/Rot547" target="_blank">GitHub</a></p>
     <p>Special thanks to R the Sombrero Man | <a href="https://github.com/themrburns/" target="_blank">GitHub</a></p>
-    <p>TNT1243 for contributing map images (Mainly Beached) | <a href="https://www.planetminecraft.com/member/tnt1243/" target="_blank">Planet Minecraft</a></p>
+    <p>TNT1243 for contributing map images and finding bugs | <a href="https://www.planetminecraft.com/member/tnt1243/" target="_blank">Planet Minecraft</a></p>
     <button onclick="closeCreditsPopup()">Close</button>
 </div>
 
@@ -654,9 +664,6 @@ function nextRound() {
 // Determine the category and construct the map identifier
 const mapCategory = `${currentMap}-${currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1).toLowerCase()}`;
 
-console.log('mapCategory:', mapCategory);
-
-
 // Get the frequency for the current map and category combination
 const frequency = mapFrequencies[mapCategory] || 3;  // Default to 3 if no frequency is found
 
@@ -690,7 +697,7 @@ function submitGuess() {
     let userGuess = document.getElementById('guess').value.trim().toLowerCase();
     const correctAnswer = currentMap.toLowerCase();
 
-    // Automatically change "yard" to "Bootcamp"
+    // Automatically change "Yard" to "Bootcamp" TNT demanded this
     if (userGuess === 'yard') {
         userGuess = 'bootcamp';
         document.getElementById('guess').value = 'Bootcamp';
@@ -760,7 +767,7 @@ document.getElementById('endPopup').querySelector('button').addEventListener('cl
    document.addEventListener('DOMContentLoaded', function () {
     const mapImage = document.getElementById('mapImage');
     
-    // Disable right-click on the image
+    // Disable right-click on the image 
     mapImage.addEventListener('contextmenu', (event) => {
         event.preventDefault();
     });
