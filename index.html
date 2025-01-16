@@ -703,6 +703,11 @@ function submitGuess() {
         document.getElementById('guess').value = 'Bootcamp';
     }
 
+        if (userGuess === 'infected') {
+        userGuess = 'nezhit';
+        document.getElementById('guess').value = 'Nezhit';
+    }
+    
     if (userGuess === correctAnswer) {
         score++;
         attempts++;
