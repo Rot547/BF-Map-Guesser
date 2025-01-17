@@ -19,19 +19,21 @@ foreach ($file in $imageFiles) {
         $mapFrequencies[$key] = 1
     }
 }
-# Format the output to match your JavaScript structure
-$output = "const mapFrequencies = {\n"
+$output = "const mapFrequencies = {"
 foreach ($key in $mapFrequencies.Keys) {
     $output += "    '$key': $($mapFrequencies[$key]),`n"
 }
 $output = $output.TrimEnd("`,n") + "`n};"
-# Output the result to the console
 $output
 # Optional: Save the output to a file
 $output | Out-File -FilePath "$rootPath\mapFrequencies.js" -Encoding UTF8
 # Indicate completion
 Write-Host "Map frequencies have been generated and saved to mapFrequencies.js.
+
+
 Script to mass rename pictures
+
+
 # Define the base directory where images are located
 $baseDirectory = "your\path\to\Maps"
 # Get all image files in subdirectories with the .png extension
