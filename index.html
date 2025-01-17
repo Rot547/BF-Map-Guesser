@@ -6,8 +6,8 @@
     <title>Blockfront Map Guesser</title>
     <style>
 
-@font-face { font-family: 'Minecraft'; src: url('Font/Monocraft.ttf'); } 
-@font-face { font-family: 'Minecraft'; font-weight: bold; src: url('Font/Monocraft.ttf');}
+@font-face { font-family: 'Minecraft'; src: url('Monocraft.ttf'); } 
+@font-face { font-family: 'Minecraft'; font-weight: bold; src: url('Monocraft.ttf');}
 
         body {
             font-family: 'Minecraft';
@@ -181,7 +181,7 @@
         }
 
 #correctPopup {
-    background-color: rgba(0, 255, 0, 0.75); 
+    background-color: rgba(0, 255, 0, 0.774); 
     color: #fff;
     animation: fadeInOut 1s ease-in-out;
 }
@@ -404,7 +404,7 @@
 </div>
 
 
-<div class="popup" id="correctPopup">Correct!</div>
+<div class="popup" id="correctPopup">Correct! It was <span id="correctAnswer"></span>.</div>
 <div class="popup" id="incorrectPopup">Incorrect! The correct answer was <span id="correctAnswer"></span></div>
 <div id="endPopup" class="popup-end">
     <p>Your final score is:</p>
@@ -692,7 +692,27 @@ const imagePath = `Maps/${currentMap}/${fixedCategory}/${currentMap.toLowerCase(
     nextImage.onerror = () => alert('Failed to load image!');
 }
 
-// Submit guess
+function levenshtein(a, b) {
+    const an = a ? a.length : 0;
+    const bn = b ? b.length : 0;
+    if (an === 0) return bn;
+    if (bn === 0) return an;
+    const matrix = Array.from({ length: an + 1 }, () => Array(bn + 1).fill(0));
+    for (let i = 0; i <= an; i++) matrix[i][0] = i;
+    for (let j = 0; j <= bn; j++) matrix[0][j] = j;
+    for (let i = 1; i <= an; i++) {
+        for (let j = 1; j <= bn; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            matrix[i][j] = Math.min(
+                matrix[i - 1][j] + 1, // deletion
+                matrix[i][j - 1] + 1, // insertion
+                matrix[i - 1][j - 1] + cost // substitution
+            );
+        }
+    }
+    return matrix[an][bn];
+}
+
 function submitGuess() {
     let userGuess = document.getElementById('guess').value.trim().toLowerCase();
     const correctAnswer = currentMap.toLowerCase();
@@ -703,15 +723,23 @@ function submitGuess() {
         document.getElementById('guess').value = 'Bootcamp';
     }
 
-        if (userGuess === 'infected') {
+    if (userGuess === 'infected') {
         userGuess = 'nezhit';
         document.getElementById('guess').value = 'Nezhit';
     }
-    
-    if (userGuess === correctAnswer) {
+
+    const distance = levenshtein(userGuess, correctAnswer);
+    const threshold = 2; // Allow up to 2 character differences
+
+    if (distance <= threshold) {
         score++;
         attempts++;
-        showPopup('correctPopup');
+        document.getElementById('correctPopup').style.display = 'block';
+        document.getElementById('correctAnswer').textContent = currentMap;
+        setTimeout(() => {
+            document.getElementById('correctPopup').style.display = 'none';
+            loadNextImage();
+        }, 2000);
     } else {
         attempts++;
         document.getElementById('correctAnswer').textContent = currentMap;
