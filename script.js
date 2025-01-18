@@ -324,7 +324,7 @@ function submitGuess() {
     }
 
     const distance = levenshtein(userGuess, correctAnswer);
-    const threshold = Math.ceil(currentMap.length * 0.2); // Allows up to 20% character differences
+    const threshold = Math.ceil(currentMap.length * 0.15); // Allows up to 15% character differences
     if (distance <= threshold) {
         score++;
         attempts++;
