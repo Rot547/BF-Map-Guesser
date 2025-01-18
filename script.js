@@ -332,7 +332,6 @@ function submitGuess() {
         document.getElementById('correctAnswerCorrect').textContent = currentMap;
         setTimeout(() => {
             document.getElementById('correctPopup').style.display = 'none';
-            loadNextImage();
         }, 2000);
     } else {
         attempts++;
