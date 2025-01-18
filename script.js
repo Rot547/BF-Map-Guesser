@@ -287,6 +287,7 @@ const imagePath = `Maps/${currentMap}/${fixedCategory}/${currentMap.toLowerCase(
     nextImage.onerror = () => alert('Failed to load image!');
 }
 
+// Calcculate the Levenshtein distance between User's guess and currentMap
 function levenshtein(a, b) {
     const an = a ? a.length : 0;
     const bn = b ? b.length : 0;
