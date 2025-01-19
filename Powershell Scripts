@@ -31,7 +31,7 @@ $output | Out-File -FilePath "$rootPath\mapFrequencies.js" -Encoding UTF8
 Write-Host "Map frequencies have been generated and saved to mapFrequencies.js.
 
 
-Script to mass rename pictures
+Script to mass rename pictures in the correct format
 
 
 # Define the base directory where images are located
